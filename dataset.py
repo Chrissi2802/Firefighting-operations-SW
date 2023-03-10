@@ -9,6 +9,9 @@
 import pandas as pd
 import geopy
 from geopy.extra.rate_limiter import RateLimiter
+import logging
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(process)d - %(funcName)s - %(levelname)s - %(message)s')
 
 
 def add_features(df):
@@ -67,7 +70,7 @@ def create_dataset():
 
     # Read data
     df = pd.read_csv("./Dataset/einsätze.csv")
-    print(df.shape)
+    logging.info("Shape of the scraped data: " + str(df.shape))
 
     # Feature Engineering
     df = add_features(df)
@@ -86,9 +89,8 @@ def create_dataset():
 
     # Save df as csv
     df.to_csv("./Dataset/einsätze_erweitert.csv", index = False)
-    print(df.shape)
-
-    print("The files 'einsätze.csv' and 'einsatzorte_koordinaten.csv' can be deleted.")
+    logging.info("Shape of the extended data: " + str(df.shape))
+    logging.info("The files 'einsätze.csv' and 'einsatzorte_koordinaten.csv' can be deleted.")
 
 
 def extend_dataset():
@@ -99,12 +101,12 @@ def extend_dataset():
     # Read data
     df = pd.read_csv("./Dataset/einsätze_erweitert.csv")
     df.to_csv("./Dataset/einsätze_erweitert_alt.csv", index = False)
-    print(df.shape)
+    logging.info("Shape the existing data: " + str(df.shape))
 
     # Read in newly scraped data
     df_fehlend = pd.read_csv("./Dataset/einsätze_fehlend.csv")
-    print(df_fehlend.shape)
-
+    logging.info("Shape of the new data: " + str(df_fehlend.shape))
+    
     # Feature Engineering
     df_fehlend = add_features(df_fehlend)
     df_fehlend = add_geodata_features(df_fehlend)
@@ -113,11 +115,11 @@ def extend_dataset():
     df = pd.concat([df, df_fehlend], axis = 0)
     df = df.sort_values(by = "Alarmierungszeit", ascending = False)
     df.to_csv("./Dataset/einsätze_erweitert.csv", index = False)
-    print(df.shape)
+    logging.info("Shape of the combined data: " + str(df.shape))
 
     # Part of the csvs can be deleted
-    print("The files 'check.csv' and 'check_fehlend.csv' are not relevant any further.")
-    print("The files 'einsätze_erweitert_alt.csv' and 'einsätze_fehlend.csv' can be deleted.")
+    logging.info("The files 'check.csv' and 'check_fehlend.csv' are not relevant any further.")
+    logging.info("The files 'einsätze_erweitert_alt.csv' and 'einsätze_fehlend.csv' can be deleted.")
 
 
 if __name__ == "__main__":
@@ -129,4 +131,4 @@ if __name__ == "__main__":
         create_dataset()
     elif user_input == "extend":
         extend_dataset()   
-
+    
