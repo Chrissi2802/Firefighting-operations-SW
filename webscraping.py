@@ -179,7 +179,7 @@ def webscraper(url, url_feed):
     einsätze = table.find_all("tr")
 
     # Feed website
-    page_feed = requests.get(url_feed, proxies = proxies[2])
+    page_feed = requests.get(url_feed, proxies = proxies[1])
     logging.debug("Page feed status code: " + str(page_feed.status_code))
 
     soup_feed = BeautifulSoup(page_feed.content, "xml")
